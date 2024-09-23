@@ -6,6 +6,7 @@ import {
 } from "@angular/common/http/testing";
 import { CoursesService } from "./courses.service";
 import { COURSES } from "../../../../server/db-data";
+import { Course } from "../model/course";
 
 describe("CoursesService", () => {
   let coursesService: CoursesService;
@@ -49,7 +50,26 @@ describe("CoursesService", () => {
     req.flush(COURSES[12]);
   });
 
+  it("Should save course data", () => {
+    const changes: Partial<Course> = {
+      titles: { description: "This is new description" },
+    };
+
+    coursesService
+      .saveCourse(12, changes)
+      .subscribe((course) => expect(course.id).toBe(12, "Not correct id"));
+
+    const req = httpTestingController.expectOne("/api/courses/12");
+    expect(req.request.method).toEqual("PUT");
+    expect(req.request.body.titles.description).toEqual(
+      changes.titles.description,
+      "description not changed"
+    );
+    req.flush({...COURSES[12], ...changes});
+  });
+
+  
   afterEach(() => {
     httpTestingController.verify();
-  })
+  });
 });
