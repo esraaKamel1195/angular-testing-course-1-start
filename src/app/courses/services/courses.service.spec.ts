@@ -53,7 +53,7 @@ describe("CoursesService", () => {
 
   it("Should save course data", () => {
     const changes: Partial<Course> = {
-      titles: { description: "This is new description" },
+      titles: { description: "This is new description" }
     };
 
     coursesService
