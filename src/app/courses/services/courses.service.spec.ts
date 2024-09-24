@@ -5,8 +5,9 @@ import {
   provideHttpClientTesting,
 } from "@angular/common/http/testing";
 import { CoursesService } from "./courses.service";
-import { COURSES } from "../../../../server/db-data";
+import { COURSES, findLessonsForCourse } from "../../../../server/db-data";
 import { Course } from "../model/course";
+import { HttpErrorResponse } from "@angular/common/http";
 
 describe("CoursesService", () => {
   let coursesService: CoursesService;
@@ -65,10 +66,46 @@ describe("CoursesService", () => {
       changes.titles.description,
       "description not changed"
     );
-    req.flush({...COURSES[12], ...changes});
+    req.flush({ ...COURSES[12], ...changes });
   });
 
-  
+  it("Should give an error if course fails", () => {
+    const changes: Partial<Course> = {
+      titles: { description: "This is new description" },
+    };
+
+    coursesService.saveCourse(12, changes).subscribe(
+      () => fail("the save course operator should fail"),
+      (error: HttpErrorResponse) => {
+        expect(error.status).toBe(500);
+      }
+    );
+
+    const req = httpTestingController.expectOne("/api/courses/12");
+    expect(req.request.method).toEqual("PUT");
+    req.flush("Save course faild", {
+      status: 500,
+      statusText: "Internal server error",
+    });
+  });
+
+  it("Should find list of lessons" , () => {
+    coursesService.findLessons(12).subscribe((lessons) => {
+      expect(lessons).toBeTruthy();
+      expect(lessons.length).toBe(3);
+    });
+
+    const req = httpTestingController.expectOne(req => req.url == "/api/lessons");
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('courseId')).toBe('12', "Not correct courseId");
+    expect(req.request.params.get('filter')).toBe('', 'invaild filter params');
+    expect(req.request.params.get('sortOrder')).toEqual("asc");
+    expect(req.request.params.get('pageNumber')).toBe('0');
+    expect(req.request.params.get('pageSize')).toBe('3');
+
+    req.flush({payload: findLessonsForCourse(1).slice(0,3)});
+  });
+
   afterEach(() => {
     httpTestingController.verify();
   });
