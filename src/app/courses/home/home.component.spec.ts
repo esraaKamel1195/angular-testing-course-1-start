@@ -50,11 +50,11 @@ describe("HomeComponent", () => {
       });
   });
 
-  it("should create the component", () => {
+  it("Should create the component", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should display only beginner courses", () => {
+  it("Should display only beginner courses", () => {
     coursesService.findAllCourses.and.returnValue(of(beginnerCourses));
     fixture.detectChanges();
 
@@ -62,7 +62,7 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(1, "Unexpected number of beginner tabs");
   });
 
-  it("should display only advanced courses", () => {
+  it("Should display only advanced courses", () => {
     coursesService.findAllCourses.and.returnValue(of(advancedCourses));
     fixture.detectChanges();
 
@@ -70,7 +70,7 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(1, "Unexpected number of advanced tabs");
   });
 
-  it("should display both tabs", () => {
+  it("Should display both tabs", () => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     fixture.detectChanges();
 
@@ -78,19 +78,19 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(2, "Unexpected number of tabs");
   });
 
-  it("should display advanced courses when tab clicked", (done: DoneFn) => {
+  it("Should display advanced courses when tab clicked", (done: DoneFn) => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     fixture.detectChanges();
 
     const tabs = el.queryAll(By.css(".mdc-tab"));
     click(tabs[1]);
-    fixture.detectChanges();
 
     setTimeout(() => {
+      fixture.detectChanges();
       const cardTitles = el.queryAll(By.css(".mat-mdc-card-title"));
       expect(cardTitles.length).toBeGreaterThan(0, "Unexpected number of courses");
       expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
-      done();
-    }, 1000); 
+    }, 1000);
+    done();
   });
 });
