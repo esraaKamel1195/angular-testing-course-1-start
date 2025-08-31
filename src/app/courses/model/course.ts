@@ -6,8 +6,8 @@ export interface Course {
     longDescription?: string;
   };
   iconUrl: string;
-  uploadedImageUrl:string;
+  uploadedImageUrl: string;
   courseListIcon: string;
-  category:string;
-  lessonsCount:number;
+  category: string;
+  lessonsCount: number;
 }

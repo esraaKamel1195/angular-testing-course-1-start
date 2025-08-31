@@ -86,7 +86,7 @@ describe("HomeComponent", () => {
     const tabs = el.queryAll(By.css(".mdc-tab"));
     click(tabs[1]);
     fixture.detectChanges();
-    fixture.whenStable().then(()=> {
+    fixture.whenStable().then(() => {
       fixture.detectChanges();
       const cardTitles = el.queryAll(By.css(".mat-mdc-card-title"));
       expect(cardTitles).toBeTruthy();
